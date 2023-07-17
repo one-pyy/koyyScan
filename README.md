@@ -74,11 +74,11 @@
    ```python
    Protocal = str
    Service = str, Version
-   def api(ip: str, port: int) -> Tuple[Protocal, List[Service]]: # 蜜罐将放入Service中
+   def api(ip: str, ports: List[int]) -> List[Tuple[Port,Protocal, List[Service]]]: # 蜜罐将放入Service中
      pass
    
    # 指纹库: Rule(protocal, service, hit_regex, Union[version_regex, version], send_content_id)
-   # 			 Send_content(send_content_id, content)
+   #        Send_content(send_content_id, content)
    ```
 
 1. 设备识别
