@@ -1,7 +1,5 @@
-from typing import *
 import re
-
-from typing import Tuple, List
+from typing import Tuple, List, NamedTuple
 
 class Version:
   def __init__(self, ver: str = "") -> None:
@@ -45,8 +43,12 @@ if __name__=='__main__':
   assert(Ver('1.2.3') > Ver('1.2'))
   assert(Ver('1.2.3-alpha') == Ver('1.2.3'))
   assert(Ver() < Ver('1.2'))
-  assert(Ver('1.2.3') in Ver("1.2"))
+  
   assert(Ver('1.2.3') in Ver())
+  assert(Ver('1.2.3') in Ver("1.2"))
+  assert(Ver('1.2.3') in Ver('1.2.3'))
+  assert(Ver('1.2.3') not in Ver('1.2.3.4'))
   assert(Ver('1.2.3') not in Ver('1.3'))
+  
   assert(str(Ver())=='N')
   assert(str(Ver('1.2.3'))=='1.2.3')
