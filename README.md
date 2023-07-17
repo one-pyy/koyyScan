@@ -72,9 +72,10 @@
    多种来源联合判断, 同时加入我们的自定义指纹逻辑
 
    ```python
+   Port = int
    Protocal = str
    Service = str, Version
-   def api(ip: str, ports: List[int]) -> List[Tuple[Port,Protocal, List[Service]]]: # 蜜罐将放入Service中
+   def api(ip: str, ports: List[Port]) -> List[Tuple[Port, Protocal, List[Service]]]: # 蜜罐将放入Service中
      pass
    
    # 指纹库: Rule(protocal, service, hit_regex, Union[version_regex, version], send_content_id)
