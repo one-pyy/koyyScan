@@ -1,6 +1,6 @@
 from src.model.finger import Finger,Ip, Port, Protocal, Service, Version
 from src.utils.data_format import finger_format,json_merge
-from src.finger.nmap import finger_scan,devices_check
+from src.finger._nmap import finger_scan,devices_check
 import json
 if __name__ == "__main__":
 
@@ -24,5 +24,8 @@ if __name__ == "__main__":
     # data2 = json.loads(jsondata2)
     # merged_data = json.dumps({**data1, **data2})
     # print(merged_data),
-    ans = finger_scan("211.22.90.152",[80,8000])
+    # ans = finger_scan("211.22.90.152",[80,8000])
+    ans=[]
+    ans.append(finger_scan("206.189.61.150",[22,7777]))
+    ans.append(finger_scan("211.22.90.145",[8099,8100]))
     print(ans)

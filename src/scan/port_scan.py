@@ -5,7 +5,6 @@ from typing import Iterable, List, Dict, Set
 import masscan
 import json
 
-from obj_walker import obj_walker as ow, obj_searcher
 
 from pitricks.utils import make_parent_top
 make_parent_top(2)
