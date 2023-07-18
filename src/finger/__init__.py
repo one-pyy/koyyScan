@@ -1,1 +1,1 @@
-from .nmap import port_discover
+from ._nmap import port_discover

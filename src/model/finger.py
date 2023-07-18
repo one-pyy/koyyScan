@@ -1,5 +1,5 @@
 import re
-from typing import Tuple, List, NamedTuple
+from typing import Tuple, List, NamedTuple, Dict
 
 class Version:
   def __init__(self, ver: str = "") -> None:
@@ -32,6 +32,10 @@ class Service(NamedTuple):
   
   def __str__(self) -> str:
     return f"{self.name}/{self.ver}"
+  
+  @classmethod
+  def parse_nmap(cls, input: Dict[str, str]) -> 'Finger':
+    ...
 
 Finger = List[Tuple[Port, Protocal, List[Service]]]
 

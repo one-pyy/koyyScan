@@ -2,6 +2,11 @@ import nmap
 import sys
 from typing import *
 
+from objprint import op
+from pitricks.utils import make_parent_top
+
+make_parent_top(2)
+
 from ..model import Ip, Port, Protocal, Service, Finger, Version
 
 def port_discover(ip: str, ports: List[Port]) -> List[Finger]:
@@ -30,7 +35,11 @@ def port_discover(ip: str, ports: List[Port]) -> List[Finger]:
     lport = nm[ip][proto].keys()
     #遍历端口及输出端口与状态
     for port in lport:
+      op(nm[ip][proto][port])
       service = Service(nm[ip][proto][port]["name"],
                         Version(nm[ip][proto][port]["version"]))
       ans.append((port, proto, service))
   return ans
+
+if __name__ == '__main__':
+  op(port_discover('113.30.191.68', [2222]))
