@@ -1,5 +1,7 @@
 import ipaddress
 
+from ..conf import TOP_30000_PORTS
+
 def get_hosts(cidrs):
   hosts = []
   for cidr in cidrs.split(','):
@@ -17,3 +19,8 @@ def get_ports(port_range):
     else:
       ports.append(int(p))
   return ports
+
+TOP_30000_PORTS = get_ports(TOP_30000_PORTS)
+def get_top_ports(top: int):
+  assert(0<top<=30000)
+  return TOP_30000_PORTS[:top]
