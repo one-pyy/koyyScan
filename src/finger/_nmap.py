@@ -10,7 +10,7 @@ make_parent_top(2)
 from ..model import Ip, Port, Protocal, Service, Finger, Version
 
 
-def finger_scan(ip: Ip, ports: List[Port]) -> List[Finger]:
+def finger_scan(ip: Ip, ports: Iterable[Port]) -> List[Finger]:
   '''
   根据已存活主机、端口列表探测指纹信息,返回当前主机的指纹信息列表
   '''
