@@ -2,6 +2,11 @@ import nmap
 import sys
 from typing import *
 
+from objprint import op
+from pitricks.utils import make_parent_top
+
+make_parent_top(2)
+
 from ..model import Ip, Port, Protocal, Service, Finger, Version
 
 
@@ -66,3 +71,5 @@ def devices_check(ip:Ip,nm: nmap.PortScanner):
 
 def honeypot_check(finger: List[Finger]):
   pass
+if __name__ == '__main__':
+  op(finger_scan('113.30.191.68', [2222]))
