@@ -9,8 +9,13 @@ make_parent_top(2)
 
 from ..model import Ip, Port, Protocal, Service, Finger, Version
 
+<<<<<<< HEAD
 def nmap_start()
 def finger_scan(ip: Ip, ports: List[Port]) -> List[Finger]:
+=======
+
+def finger_scan(ip: Ip, ports: Iterable[Port]) -> List[Finger]:
+>>>>>>> a8cc22135522b3f8ddee371c08255653abacbbcd
   '''
   根据已存活主机、端口列表探测指纹信息,返回当前主机的指纹信息列表
   '''
