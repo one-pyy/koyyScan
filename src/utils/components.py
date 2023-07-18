@@ -8,7 +8,7 @@ def get_honeypots():
 
 def get_devices():
     '''返回device列表'''
-    return {"pfsense","Hikvision","dahua","cisco","synology"}
+    return {"firewall":"pfsense","Webcam":"Hikvision","switch":["dahua","cisco"],"Nas":"synology"}
 
 def get_protocols():
     '''返回protocol列表'''

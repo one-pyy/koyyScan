@@ -32,8 +32,10 @@ class Service(NamedTuple):
   
   def __str__(self) -> str:
     return f"{self.name}/{self.ver}"
+Script = dict
 
-Finger = List[Tuple[Port, Protocal, List[Service]]]
+
+Finger = List[Tuple[Port, Protocal, List[Service], Script]]
 
 def api_example(ip: Ip, ports: List[Port]) -> List[Finger]: # 蜜罐将放入Service中
   ...
