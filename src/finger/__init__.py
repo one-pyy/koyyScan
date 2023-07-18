@@ -1,1 +1,1 @@
-from .nmap import port_discover
+from .nmap import finger_scan
