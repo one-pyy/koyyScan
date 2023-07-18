@@ -48,26 +48,40 @@ def finger_scan(ip: Ip, ports: List[Port]) -> List[Finger]:
 def devices_check(ip:Ip,nm: nmap.PortScanner):
   check_nm = nm
   try:
-    scripts = nm[ip]['tcp'][80]['script']
-  except KeyError:
-    print(f"{ip} no scripts")
-  try:
-    headers = scripts['http-headers']
+    headers = check_nm[ip]['tcp'][80]['script']['http-headers']
     if 'Server: Synology' in headers:
       print(f"{ip} is Synology NAS")
     elif 'Server: pfSense' in headers:
       print(f"{ip} is pfSense Firewall")
   except KeyError:
     print(f"{ip} no http-headers")
+    sys.exit(0)
+  except:
+    print("Unexpected error:", sys.exc_info()[0])
+    sys.exit(0)
 
 
-  os_match = nm[ip]['osmatch'][0]
-  if os_match and os_match['name'] == 'Cisco IOS':
-    print(f"{ip} is Cisco Router")
+  try:
+    os_match = check_nm[ip]['osmatch'][0]
+    if os_match and os_match['name'] == 'Cisco IOS':
+      print(f"{ip} is Cisco Router")
+  except KeyError:
+    print(f"{ip} no osmatch")
+    sys.exit(0)
+  except:
+    print("Unexpected error:", sys.exc_info()[0])
+    sys.exit(0)
 
-  title = nm[ip]['tcp'][80]['script']['http-title']
-  if 'Hikvision' in title:
-    print(f"{ip} may be Hikvision camera")   
+  try:
+    title = nm[ip]['tcp'][80]['script']['http-title']
+    if 'Hikvision' in title:
+      print(f"{ip} may be Hikvision camera")
+  except KeyError:
+    print(f"{ip} no http-title")
+    sys.exit(0)
+  except:
+    print("Unexpected error:", sys.exc_info()[0])
+    sys.exit(0)   
 
 def honeypot_check(finger: List[Finger]):
   pass

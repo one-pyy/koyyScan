@@ -1,4 +1,4 @@
-from src import parse_args, gconf, test_ip, test_port_ms, port_discover, finger_scan
+from src import parse_args, gconf, test_ip, test_port_ms, finger_scan
 import re
 import tqdm
 
