@@ -61,10 +61,12 @@ def port_discover(ip: str, ports: List[Port]) -> List[Finger]:
   for proto in nm[ip].all_protocols():
           #获取协议的所有扫描端口        
           lport = nm[ip][proto].keys()
+          list(lport).sort()
           #遍历端口及输出端口与状态
           for port in lport:
-              service = Service(nm[ip][proto][port]["name"],Version(nm[ip][proto][port]["version"]))
-              ans.append(tuple([port,proto,service]))
+              service = Service(nm[ip][proto][port]["name"],"N" if nm[ip][proto][port]["version"]=="" else nm[ip][proto][port]["version"])
+              ans.append(tuple(port,proto,service))
+              #print('port : %s\tstate : %s' % (port, nm[host][proto][port]['state']))
   return ans
 
 if __name__=='__main__':

@@ -2,7 +2,6 @@ from src import parse_args
 from src import port_discover
 from typing import Tuple, List, NamedTuple
 import re
-import tqdm
 
 if __name__=='__main__':
   # cmd_args = parse_args()
@@ -10,7 +9,6 @@ if __name__=='__main__':
   result = list()
   for iport in open('./result_211.22.90.0','r'):
     ip = re.search('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}',iport).group()
-    port = [re.search(':\d{1,5}',iport).group()[1:]]
+    port = list(re.search(':\d{1,5}',iport).group()[1:])
     result.append(port_discover(ip,port))
-    print(port_discover(ip,port))
   print(result)
