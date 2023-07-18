@@ -1,6 +1,5 @@
 import re
 from typing import Tuple, List, NamedTuple
-import nmap,sys
 
 class Version:
   def __init__(self, ver: str = "") -> None:
@@ -24,7 +23,7 @@ class Version:
     return '.'.join(str(x) for x in self.ver) or "N"
 Ver = Version
 
-
+Ip = str
 Port = int
 Protocal = str
 class Service(NamedTuple):
@@ -36,36 +35,8 @@ class Service(NamedTuple):
 
 Finger = List[Tuple[Port, Protocal, List[Service]]]
 
-def api_example(ip: str, ports: List[Port]) -> List[Finger]: # 蜜罐将放入Service中
+def api_example(ip: Ip, ports: List[Port]) -> List[Finger]: # 蜜罐将放入Service中
   ...
-
-def port_discover(ip: str, ports: List[Port]) -> List[Finger]:
-  try:
-      #创建端口扫描对象
-      nm = nmap.PortScanner()
-  except nmap.PortScannerError:
-      print('Nmap not found', sys.exc_info()[0])
-      sys.exit(0)
-  except:
-      print("Unexpected error:", sys.exc_info()[0])
-      sys.exit(0)
-
-  try:
-      #调用nmap扫描方法
-      nm.scan(ip,ports=','.join(map(str,ports)),arguments=' -v -sS -Pn -sV -O')
-  except Exception as e:
-      print("Scan error:"+str(e))
-  
-  ans = []
-  # 输出TCP协议及端口状态
-  for proto in nm[ip].all_protocols():
-          #获取协议的所有扫描端口        
-          lport = nm[ip][proto].keys()
-          #遍历端口及输出端口与状态
-          for port in lport:
-              service = Service(nm[ip][proto][port]["name"],Version(nm[ip][proto][port]["version"]))
-              ans.append(tuple([port,proto,service]))
-  return ans
 
 if __name__=='__main__':
   assert(Ver('1.2.3') > Ver('1.2.2'))

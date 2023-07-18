@@ -78,7 +78,7 @@
    def api(ip: str, ports: List[Port]) -> List[Tuple[Port, Protocal, List[Service]]]: # 蜜罐将放入Service中
      pass
    
-   # 指纹库: Rule(protocal, service, hit_regex, Union[version_regex, version], send_content_id)
+   # 指纹库: Rule(protocal, service, Union[hit_regex, hash], Union[version_regex, version], send_content_id)
    #        Send_content(send_content_id, content)
    ```
 
