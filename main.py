@@ -1,6 +1,4 @@
-from src import parse_args, gconf, test_ip, test_port_ms
-from src import port_discover
-from typing import Tuple, List, NamedTuple
+from src import parse_args, gconf, test_ip, test_port_ms, port_discover, finger_scan
 import re
 import tqdm
 
