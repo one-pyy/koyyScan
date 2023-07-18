@@ -23,7 +23,7 @@ class Version:
     return '.'.join(str(x) for x in self.ver) or "N"
 Ver = Version
 
-
+Ip = str
 Port = int
 Protocal = str
 class Service(NamedTuple):
@@ -35,7 +35,7 @@ class Service(NamedTuple):
 
 Finger = List[Tuple[Port, Protocal, List[Service]]]
 
-def api_example(ip: str, ports: List[Port]) -> List[Finger]: # 蜜罐将放入Service中
+def api_example(ip: Ip, ports: List[Port]) -> List[Finger]: # 蜜罐将放入Service中
   ...
 
 if __name__=='__main__':
