@@ -1,1 +1,1 @@
-from ._nmap import finger_scan
+from ._nmap import finger_scan,devices_check
