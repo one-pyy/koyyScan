@@ -33,10 +33,10 @@ if __name__ == '__main__':
   
   if "run_finger" and 1:
     ip_port_alive = json.load(open(f"tmp.json", 'r'))
-    with ThreadPoolExecutor(max_workers=152) as pool:
+    with ThreadPoolExecutor(max_workers=100) as pool:
       futures = []
       for ip, ports in ip_port_alive.items():
-        if ports:
+        if ports and ports.__len__()<100:
           future = pool.submit(finger_scan, ip, ports)
           future.ip = ip
           futures.append(future)
