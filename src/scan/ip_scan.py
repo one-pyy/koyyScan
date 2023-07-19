@@ -11,11 +11,11 @@ make_parent_top(2)
 from ..conf import gconf
 from ..model import Ip, Port, Protocal, Service, Finger
 
-def test_ip(hosts: Iterable[Ip], repeat = 3) -> Set[Ip]:
+def test_ip(hosts: Iterable[Ip], repeat = 2) -> Set[Ip]:
   ret = set()
   for _ in range(repeat):
-    icmp_rsp = multiping(hosts, count=2, interval=0.1, timeout=2, concurrent_tasks=gconf['threads'])
-    res: Dict[bool, List[Host]] = {}
+    icmp_rsp = multiping(hosts, count=2, interval=0, timeout=2, concurrent_tasks=128)
+    res: Dict[bool, List[Host]] = {True: []}
     for k, g in groupby(icmp_rsp, lambda x: x.is_alive):
       res.setdefault(k, []).extend(list(g))
     ret.update(map(lambda x: x.address, res[True]))

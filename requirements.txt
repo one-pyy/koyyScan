@@ -1,0 +1,7 @@
+icmplib~=3.0.3
+objprint~=0.2.2
+pitricks~=0.1.4a2
+python_masscan~=1.0.0
+python_nmap~=0.7.1
+scapy~=2.5.0
+tqdm~=4.64.1

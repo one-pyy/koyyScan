@@ -62,7 +62,7 @@ def devices_check(ip:Ip,nm: nmap.PortScanner):
       print(f"{ip} is Synology NAS")
     elif 'Server: pfSense' in headers:
       print(f"{ip} is pfSense Firewall")
-  except KeyError:
+  except (KeyError, IndexError):
     print(f"{ip} no http-headers")
     # sys.exit(0)
   except:
@@ -73,7 +73,7 @@ def devices_check(ip:Ip,nm: nmap.PortScanner):
     os_match = nm[ip]['osmatch'][0]
     if os_match and os_match['name'] == 'Cisco IOS':
       print(f"{ip} is Cisco Router")
-  except KeyError:
+  except IndexError:
     print(f"{ip} no osmatch")
   except:
     traceback.print_exc()
@@ -83,7 +83,7 @@ def devices_check(ip:Ip,nm: nmap.PortScanner):
     title = nm[ip]['tcp'][80]['script']['http-title']
     if 'Hikvision' in title:
       print(f"{ip} may be Hikvision camera")
-  except KeyError:
+  except (KeyError, IndexError):
     print(f"{ip} no http-title")
     # sys.exit(0)
   except:

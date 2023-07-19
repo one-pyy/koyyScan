@@ -1,5 +1,3 @@
-import re
-import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from objprint import op
