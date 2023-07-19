@@ -16,7 +16,7 @@ if __name__ == '__main__':
   cmd_args = parse_args()
   gconf.update(**cmd_args)
   
-  if "run_ip_port" and 1:
+  if "run_ip_port" and 0:
     ip_alive = list(test_ip(gconf['ip']))
     ip_alive.sort()
     lg.info(f"IP alive: {ip_alive}")
@@ -40,7 +40,9 @@ if __name__ == '__main__':
         futures.append(future)
       
       for future in as_completed(futures):
-        print(future.ip, future.result())
+        json.dump(finger_format(future.ip,future.result()[0],future.result()[1],str(future.result()[2])),open(f'./result/format_json/{future.ip}.json', 'w'), indent=2, ensure_ascii=False)
+        # print(future.ip, future.result())
+        # print(finger_format(future.ip,future.result()[0],future.result()[1],future.result()[2]))
   
   # print(list(cmd_args['ip']))
   # result = list()

@@ -1,6 +1,6 @@
 import json
 from typing import List,Tuple
-from ..model import Finger,Service
+from ..model import Finger,Service,Device,Honeypot
 from .components import *
 from functools import wraps
 '''
@@ -34,7 +34,7 @@ def finger_filter(data:dict, comp_type: str):
   return data
 
 
-def finger_format(host: str,finger: Finger,status: int = 0):
+def finger_format(host: str,finger: Finger,devices: List[Device] = None ,honeypot: Honeypot = None,status: int = 0):
     '''
     接收从finger_scan输出的主机和指纹信息,如果status为1将其格式化为单个json否则输出dict
     '''
@@ -44,15 +44,15 @@ def finger_format(host: str,finger: Finger,status: int = 0):
 
     for port, proto, service, script in finger:
         service_data = finger_filter({'port': port, 'protocol': proto},"protocol")
-        if service is not None:
-            service_data['service_app'] = finger_filter([service],"servise")
+        if service is not None :
+            service_data['service_app'] = finger_filter([service],"servise") if len(finger_filter([service],"servise"))>0 else None
         else:
             service_data['service_app'] = None
         
         data[host]['services'].append(service_data)
 
-    data[host]['deviceinfo'] = None 
-    data[host]['honeypot'] = None
+    data[host]['deviceinfo'] = devices 
+    data[host]['honeypot'] = honeypot
     if status == 1:
         json_data = json.dumps(data, indent=4)
         return json_data
