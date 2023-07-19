@@ -2,6 +2,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging as lg
 import asyncio as ai
 import json
+from tqdm import tqdm
 
 from objprint import op
 from pitricks.utils import init_log
@@ -32,7 +33,7 @@ if __name__ == '__main__':
   
   if "run_finger" and 1:
     ip_port_alive = json.load(open(f"tmp.json", 'r'))
-    with ThreadPoolExecutor(max_workers=80) as pool:
+    with ThreadPoolExecutor(max_workers=152) as pool:
       futures = []
       for ip, ports in ip_port_alive.items():
         if ports:
@@ -42,8 +43,10 @@ if __name__ == '__main__':
         else:
           ...#TODO
       
-      for future in as_completed(futures):
-        json.dump(finger_format(future.ip,future.result()[0],future.result()[1],str(future.result()[2])),open(f'./result/format_json/{future.ip}.json', 'w'), indent=2, ensure_ascii=False)
+      for future in tqdm(as_completed(futures)):
+        res = future.result()
+        json.dump(finger_format(future.ip, res[0], res[1], str(res[2])),open(f'./result/format_json/{future.ip}.json', 'w'), indent=2, ensure_ascii=False)
+        print(future.ip, res)
         # print(future.ip, future.result())
         # print(finger_format(future.ip,future.result()[0],future.result()[1],future.result()[2]))
   
