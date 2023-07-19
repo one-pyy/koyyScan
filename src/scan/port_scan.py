@@ -2,6 +2,8 @@ import asyncio as ai
 from typing import Iterable, List, Dict, Set
 import json
 import logging as lg
+import os
+from uuid import uuid4
 
 from scapy.layers.inet import IP, TCP
 from scapy.sendrecv import sr1, sr
@@ -23,6 +25,15 @@ def test_port(ip: Ip, ports: List[Port]):
     for rsp in ans[0].res]
   return op_ports
 
+def run_mas(hosts: Iterable[Ip], ports: List[Port]):
+  os.makedirs("./tmp", exist_ok=True)
+  filename = f"./tmp/masscan_{uuid4()}.json"
+  os.system(
+    f"masscan -p {','.join(map(str, ports))} {','.join(hosts)} --rate {gconf['threads']} -oJ {filename}")
+  print()
+  res = json.load(open(filename))
+  return res
+
 TOP_250 = get_top_ports(250)
 def test_port_ms(hosts: List[Ip], alive_ip: List[Ip], 
                  ports: List[Port], lots_ports: List[Port], 
@@ -30,11 +41,9 @@ def test_port_ms(hosts: List[Ip], alive_ip: List[Ip],
   ret = {ip: set() for ip in alive_ip}
   
   def t(hosts: Iterable[Ip], ports: List[Port]):
-    mas = masscan.PortScanner()
-    mas.scan(",".join(hosts), ports=",".join(map(str, ports)), arguments=f'--max-rate {gconf["threads"]}')
-    scan_ans = json.loads(mas.scan_result)['scan']
-    for k,v in scan_ans.items():
-      ret.setdefault(k, set()).update(info['port'] for info in v)
+    scan_ans = run_mas(hosts, ports)
+    for e in scan_ans:
+      ret.setdefault(e['ip'], set()).add(e['ports'][0]['port'])
   
   for _ in range(repeat):
     t(hosts, TOP_250)
@@ -46,8 +55,8 @@ def test_port_ms(hosts: List[Ip], alive_ip: List[Ip],
   lg.info(f"TOP {ports.__len__()} ports scan done, {len(ret)} hosts alive")
   lg.debug(f"result: {ret}")
 
-  for _ in range(repeat):
-    t(ret.keys(), lots_ports)
+  # for _ in range(repeat):
+  t(ret.keys(), lots_ports)
   lg.info(f"TOP {lots_ports.__len__()} ports scan done")
   lg.debug(f"result: {ret}")
   

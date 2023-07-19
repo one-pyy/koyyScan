@@ -14,7 +14,7 @@ from ..model import Ip, Port, Protocal, Service, Finger
 def test_ip(hosts: Iterable[Ip], repeat = 2) -> Set[Ip]:
   ret = set()
   for _ in range(repeat):
-    icmp_rsp = multiping(hosts, count=2, interval=0.01, timeout=10, concurrent_tasks=128)
+    icmp_rsp = multiping(hosts, count=2, interval=0.01, timeout=10, concurrent_tasks=1024)
     res: Dict[bool, List[Host]] = {True: []}
     for k, g in groupby(icmp_rsp, lambda x: x.is_alive):
       res.setdefault(k, []).extend(list(g))
