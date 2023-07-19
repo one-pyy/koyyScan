@@ -1,0 +1,465 @@
+{
+    "nmaprun": {
+        "@scanner": "nmap",
+        "@args": "nmap -oX - -p 2222,1022,5672 -v -sS -Pn -sV -A -T4 --script=banner,ssl-cert,http-title,http-headers -oN ./result/113.30.191.68_nm 113.30.191.68",
+        "@start": "1689748679",
+        "@startstr": "Wed Jul 19 14:37:59 2023",
+        "@version": "7.80",
+        "@xmloutputversion": "1.04",
+        "scaninfo": {
+            "@type": "syn",
+            "@protocol": "tcp",
+            "@numservices": "3",
+            "@services": "1022,2222,5672"
+        },
+        "verbose": {
+            "@level": "1"
+        },
+        "debugging": {
+            "@level": "0"
+        },
+        "taskbegin": [
+            {
+                "@task": "NSE",
+                "@time": "1689748680"
+            },
+            {
+                "@task": "NSE",
+                "@time": "1689748680"
+            },
+            {
+                "@task": "Parallel DNS resolution of 1 host.",
+                "@time": "1689748680"
+            },
+            {
+                "@task": "SYN Stealth Scan",
+                "@time": "1689748681"
+            },
+            {
+                "@task": "Service scan",
+                "@time": "1689748681"
+            },
+            {
+                "@task": "Traceroute",
+                "@time": "1689748700"
+            },
+            {
+                "@task": "Parallel DNS resolution of 8 hosts.",
+                "@time": "1689748703"
+            },
+            {
+                "@task": "NSE",
+                "@time": "1689748704"
+            },
+            {
+                "@task": "NSE",
+                "@time": "1689748719"
+            },
+            {
+                "@task": "NSE",
+                "@time": "1689748719"
+            },
+            {
+                "@task": "NSE",
+                "@time": "1689748719"
+            }
+        ],
+        "taskend": [
+            {
+                "@task": "NSE",
+                "@time": "1689748680"
+            },
+            {
+                "@task": "NSE",
+                "@time": "1689748680"
+            },
+            {
+                "@task": "Parallel DNS resolution of 1 host.",
+                "@time": "1689748681"
+            },
+            {
+                "@task": "SYN Stealth Scan",
+                "@time": "1689748681",
+                "@extrainfo": "3 total ports"
+            },
+            {
+                "@task": "Service scan",
+                "@time": "1689748692",
+                "@extrainfo": "3 services on 1 host"
+            },
+            {
+                "@task": "Traceroute",
+                "@time": "1689748703"
+            },
+            {
+                "@task": "Parallel DNS resolution of 8 hosts.",
+                "@time": "1689748704"
+            },
+            {
+                "@task": "NSE",
+                "@time": "1689748719"
+            },
+            {
+                "@task": "NSE",
+                "@time": "1689748719"
+            },
+            {
+                "@task": "NSE",
+                "@time": "1689748719"
+            },
+            {
+                "@task": "NSE",
+                "@time": "1689748719"
+            }
+        ],
+        "host": {
+            "@starttime": "1689748681",
+            "@endtime": "1689748719",
+            "status": {
+                "@state": "up",
+                "@reason": "user-set",
+                "@reason_ttl": "0"
+            },
+            "address": {
+                "@addr": "113.30.191.68",
+                "@addrtype": "ipv4"
+            },
+            "hostnames": null,
+            "ports": {
+                "port": [
+                    {
+                        "@protocol": "tcp",
+                        "@portid": "1022",
+                        "state": {
+                            "@state": "open",
+                            "@reason": "syn-ack",
+                            "@reason_ttl": "48"
+                        },
+                        "service": {
+                            "@name": "ssh",
+                            "@product": "OpenSSH",
+                            "@version": "7.4",
+                            "@extrainfo": "protocol 2.0",
+                            "@method": "probed",
+                            "@conf": "10",
+                            "cpe": "cpe:/a:openbsd:openssh:7.4"
+                        },
+                        "script": {
+                            "@id": "banner",
+                            "@output": "SSH-2.0-OpenSSH_7.4"
+                        }
+                    },
+                    {
+                        "@protocol": "tcp",
+                        "@portid": "2222",
+                        "state": {
+                            "@state": "open",
+                            "@reason": "syn-ack",
+                            "@reason_ttl": "47"
+                        },
+                        "service": {
+                            "@name": "ssh",
+                            "@product": "OpenSSH",
+                            "@version": "5.1p1 Debian 5",
+                            "@extrainfo": "protocol 2.0",
+                            "@ostype": "Linux",
+                            "@method": "probed",
+                            "@conf": "10",
+                            "cpe": [
+                                "cpe:/a:openbsd:openssh:5.1p1",
+                                "cpe:/o:linux:linux_kernel"
+                            ]
+                        },
+                        "script": {
+                            "@id": "banner",
+                            "@output": "SSH-2.0-OpenSSH_5.1p1 Debian-5"
+                        }
+                    },
+                    {
+                        "@protocol": "tcp",
+                        "@portid": "5672",
+                        "state": {
+                            "@state": "open",
+                            "@reason": "syn-ack",
+                            "@reason_ttl": "47"
+                        },
+                        "service": {
+                            "@name": "amqp",
+                            "@product": "RabbitMQ",
+                            "@version": "3.12.1",
+                            "@extrainfo": "0-9",
+                            "@method": "probed",
+                            "@conf": "10"
+                        },
+                        "script": {
+                            "@id": "amqp-info",
+                            "@output": "\n  capabilities: \n    publisher_confirms: YES\n    exchange_exchange_bindings: YES\n    basic.nack: YES\n    consumer_cancel_notify: YES\n    connection.blocked: YES\n    consumer_priorities: YES\n    authentication_failure_close: YES\n    per_consumer_qos: YES\n    direct_reply_to: YES\n  cluster_name: rabbit@67eaaf5d332e\n  copyright: Copyright (c) 2007-2023 VMware, Inc. or its affiliates.\n  information: Licensed under the MPL 2.0. Website: https://rabbitmq.com\n  platform: Erlang/OTP 25.3.2.3\n  product: RabbitMQ\n  version: 3.12.1\n  mechanisms: PLAIN AMQPLAIN\n  locales: en_US\n"
+                        }
+                    }
+                ]
+            },
+            "os": {
+                "portused": [
+                    {
+                        "@state": "open",
+                        "@proto": "tcp",
+                        "@portid": "1022"
+                    },
+                    {
+                        "@state": "closed",
+                        "@proto": "udp",
+                        "@portid": "30075"
+                    }
+                ],
+                "osmatch": [
+                    {
+                        "@name": "Linux 3.10 - 3.12",
+                        "@accuracy": "90",
+                        "@line": "63130",
+                        "osclass": {
+                            "@type": "general purpose",
+                            "@vendor": "Linux",
+                            "@osfamily": "Linux",
+                            "@osgen": "3.X",
+                            "@accuracy": "90",
+                            "cpe": "cpe:/o:linux:linux_kernel:3"
+                        }
+                    },
+                    {
+                        "@name": "Linux 4.9",
+                        "@accuracy": "90",
+                        "@line": "67695",
+                        "osclass": {
+                            "@type": "general purpose",
+                            "@vendor": "Linux",
+                            "@osfamily": "Linux",
+                            "@osgen": "4.X",
+                            "@accuracy": "90",
+                            "cpe": "cpe:/o:linux:linux_kernel:4.9"
+                        }
+                    },
+                    {
+                        "@name": "Linux 4.4",
+                        "@accuracy": "89",
+                        "@line": "67202",
+                        "osclass": {
+                            "@type": "general purpose",
+                            "@vendor": "Linux",
+                            "@osfamily": "Linux",
+                            "@osgen": "4.X",
+                            "@accuracy": "89",
+                            "cpe": "cpe:/o:linux:linux_kernel:4.4"
+                        }
+                    },
+                    {
+                        "@name": "Linux 2.6.18 - 2.6.22",
+                        "@accuracy": "88",
+                        "@line": "49721",
+                        "osclass": {
+                            "@type": "general purpose",
+                            "@vendor": "Linux",
+                            "@osfamily": "Linux",
+                            "@osgen": "2.6.X",
+                            "@accuracy": "88",
+                            "cpe": "cpe:/o:linux:linux_kernel:2.6"
+                        }
+                    },
+                    {
+                        "@name": "Linux 4.0",
+                        "@accuracy": "88",
+                        "@line": "66796",
+                        "osclass": {
+                            "@type": "general purpose",
+                            "@vendor": "Linux",
+                            "@osfamily": "Linux",
+                            "@osgen": "4.X",
+                            "@accuracy": "88",
+                            "cpe": "cpe:/o:linux:linux_kernel:4.0"
+                        }
+                    },
+                    {
+                        "@name": "Linux 3.10",
+                        "@accuracy": "87",
+                        "@line": "63039",
+                        "osclass": {
+                            "@type": "general purpose",
+                            "@vendor": "Linux",
+                            "@osfamily": "Linux",
+                            "@osgen": "3.X",
+                            "@accuracy": "87",
+                            "cpe": "cpe:/o:linux:linux_kernel:3.10"
+                        }
+                    },
+                    {
+                        "@name": "Linux 3.10 - 4.11",
+                        "@accuracy": "87",
+                        "@line": "63230",
+                        "osclass": [
+                            {
+                                "@type": "general purpose",
+                                "@vendor": "Linux",
+                                "@osfamily": "Linux",
+                                "@osgen": "3.X",
+                                "@accuracy": "87",
+                                "cpe": "cpe:/o:linux:linux_kernel:3"
+                            },
+                            {
+                                "@type": "general purpose",
+                                "@vendor": "Linux",
+                                "@osfamily": "Linux",
+                                "@osgen": "4.X",
+                                "@accuracy": "87",
+                                "cpe": "cpe:/o:linux:linux_kernel:4"
+                            }
+                        ]
+                    },
+                    {
+                        "@name": "Linux 3.11 - 4.1",
+                        "@accuracy": "87",
+                        "@line": "63416",
+                        "osclass": [
+                            {
+                                "@type": "general purpose",
+                                "@vendor": "Linux",
+                                "@osfamily": "Linux",
+                                "@osgen": "3.X",
+                                "@accuracy": "87",
+                                "cpe": "cpe:/o:linux:linux_kernel:3"
+                            },
+                            {
+                                "@type": "general purpose",
+                                "@vendor": "Linux",
+                                "@osfamily": "Linux",
+                                "@osgen": "4.X",
+                                "@accuracy": "87",
+                                "cpe": "cpe:/o:linux:linux_kernel:4"
+                            }
+                        ]
+                    },
+                    {
+                        "@name": "Linux 3.2 - 4.9",
+                        "@accuracy": "87",
+                        "@line": "65105",
+                        "osclass": [
+                            {
+                                "@type": "general purpose",
+                                "@vendor": "Linux",
+                                "@osfamily": "Linux",
+                                "@osgen": "3.X",
+                                "@accuracy": "87",
+                                "cpe": "cpe:/o:linux:linux_kernel:3"
+                            },
+                            {
+                                "@type": "general purpose",
+                                "@vendor": "Linux",
+                                "@osfamily": "Linux",
+                                "@osgen": "4.X",
+                                "@accuracy": "87",
+                                "cpe": "cpe:/o:linux:linux_kernel:4"
+                            }
+                        ]
+                    },
+                    {
+                        "@name": "Linux 2.6.32",
+                        "@accuracy": "86",
+                        "@line": "55282",
+                        "osclass": {
+                            "@type": "general purpose",
+                            "@vendor": "Linux",
+                            "@osfamily": "Linux",
+                            "@osgen": "2.6.X",
+                            "@accuracy": "86",
+                            "cpe": "cpe:/o:linux:linux_kernel:2.6.32"
+                        }
+                    }
+                ]
+            },
+            "uptime": {
+                "@seconds": "1034756",
+                "@lastboot": "Fri Jul  7 15:12:43 2023"
+            },
+            "distance": {
+                "@value": "14"
+            },
+            "tcpsequence": {
+                "@index": "257",
+                "@difficulty": "Good luck!",
+                "@values": "2FE2A7BE,C3CB82B3,3798F2AD,9F0035FC,D462D5FB,56A536D1"
+            },
+            "ipidsequence": {
+                "@class": "All zeros",
+                "@values": "0,0,0,0,0,0"
+            },
+            "tcptssequence": {
+                "@class": "1000HZ",
+                "@values": "3DACC56B,3DACC5D0,3DACC634,3DACC698,3DACC6FD,3DACC760"
+            },
+            "trace": {
+                "@port": "5672",
+                "@proto": "tcp",
+                "hop": [
+                    {
+                        "@ttl": "1",
+                        "@ipaddr": "172.18.16.1",
+                        "@rtt": "0.15",
+                        "@host": "DESKTOP-k0a1i"
+                    },
+                    {
+                        "@ttl": "2",
+                        "@ipaddr": "192.168.0.1",
+                        "@rtt": "0.77"
+                    },
+                    {
+                        "@ttl": "7",
+                        "@ipaddr": "139.226.225.141",
+                        "@rtt": "8.23"
+                    },
+                    {
+                        "@ttl": "8",
+                        "@ipaddr": "219.158.7.130",
+                        "@rtt": "11.62"
+                    },
+                    {
+                        "@ttl": "9",
+                        "@ipaddr": "219.158.8.174",
+                        "@rtt": "8.62"
+                    },
+                    {
+                        "@ttl": "10",
+                        "@ipaddr": "219.158.102.130",
+                        "@rtt": "200.60"
+                    },
+                    {
+                        "@ttl": "13",
+                        "@ipaddr": "213.254.219.98",
+                        "@rtt": "256.53"
+                    },
+                    {
+                        "@ttl": "14",
+                        "@ipaddr": "113.30.191.68",
+                        "@rtt": "239.63"
+                    }
+                ]
+            },
+            "times": {
+                "@srtt": "212255",
+                "@rttvar": "53207",
+                "@to": "425083"
+            }
+        },
+        "runstats": {
+            "finished": {
+                "@time": "1689748719",
+                "@timestr": "Wed Jul 19 14:38:39 2023",
+                "@elapsed": "39.87",
+                "@summary": "Nmap done at Wed Jul 19 14:38:39 2023; 1 IP address (1 host up) scanned in 39.87 seconds",
+                "@exit": "success"
+            },
+            "hosts": {
+                "@up": "1",
+                "@down": "0",
+                "@total": "1"
+            }
+        }
+    }
+}

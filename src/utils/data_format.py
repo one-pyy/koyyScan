@@ -42,7 +42,7 @@ def finger_format(host: str,finger: Finger,status: int = 0):
     data[host] = {}
     data[host]['services'] = []
 
-    for port, proto, service in finger:
+    for port, proto, service, script in finger:
         service_data = finger_filter({'port': port, 'protocol': proto},"protocol")
         if service is not None:
             service_data['service_app'] = finger_filter([service],"servise")

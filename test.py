@@ -26,6 +26,8 @@ if __name__ == "__main__":
     # print(merged_data),
     # ans = finger_scan("211.22.90.152",[80,8000])
     ans=[]
-    ans.append(finger_scan("206.189.61.150",[22,7777]))
-    ans.append(finger_scan("211.22.90.145",[8099,8100]))
+    # ans.append(finger_scan("206.189.61.150",[22,7777]))
+    ans.append(finger_scan("113.30.191.68",[2222,1022,5672]))
+    # data = [(1022,'ssh',Service('openssh',7.4),{'banner': 'SSH-2.0-OpenSSH_7.4'}),(2222,'ssh',Service('openssh',5.1),{'banner': 'SSH-2.0-OpenSSH_5.1p1 Debian-5'})]
+    # print(finger_format('211.22.90.145',data,0))
     print(ans)

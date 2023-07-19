@@ -1,4 +1,4 @@
-import nmap
+import nmap,json,xmltodict
 import sys
 import traceback
 from typing import *
@@ -31,11 +31,11 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> List[Finger]:
         ip,
         ports=','.join(map(str, ports)),
         arguments=
-        '-v -sS -Pn -sV -A -T4 --script=banner,ssl-cert,http-title,http-headers')
+        f'-v -sS -Pn -sV -A -T4 --script=banner,ssl-cert,http-title,http-headers -oN ./result/_nmap/{ip}_nm')
   except Exception as e:
     traceback.print_exc()
     raise
-
+  _default_output(nm)
   devices_check(ip, nm)
   
 
@@ -96,6 +96,14 @@ def devices_check(ip:Ip,nm: nmap.PortScanner):
 def honeypot_check(finger: List[Finger]):
   pass
 
+def _default_output(_nm: nmap.PortScanner()):
+  order_dict = xmltodict.parse(_nm.get_nmap_last_output())
+  host = _nm.all_hosts()[0]
+  with open(f'./result/json/{host}_nm.json','w') as f:
+    f.write(json.dumps(order_dict,indent=4))
+    print(f"Host:{host} Saved.")
+    
+    
 
 if __name__ == '__main__':
   op(finger_scan('113.30.191.68', [2222]))

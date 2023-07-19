@@ -5,6 +5,8 @@ from objprint import op
 from pitricks.utils import init_log
 
 from src import parse_args, gconf, test_ip, test_port_ms, finger_scan
+from src.utils.data_format import finger_format
+
 
 init_log(lg.INFO)
 
@@ -31,6 +33,7 @@ if __name__ == '__main__':
     
     for future in as_completed(futures):
       op(future.ip, future.result())
+      op(finger_format(ip,future.result(),1))
   # print(list(cmd_args['ip']))
   # result = list()
   # for iport in open('./result_211.22.90.0', 'r'):
