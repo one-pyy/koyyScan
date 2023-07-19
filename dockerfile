@@ -4,6 +4,6 @@ WORKDIR /PiScan
 COPY requirements.txt .
 RUN pip install --upgrade -r requirements.txt && \
     apt update && \
-    apt install -y masscan nmap libpcap-dev
+    apt install -y masscan nmap libpcap-dev procps
 
 # COPY . .

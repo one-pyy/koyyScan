@@ -37,6 +37,7 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> List[Finger]:
     raise
 
   devices_check(ip, nm)
+  
 
   ans = []
   # 输出TCP\UDP协议及端口状态
@@ -50,12 +51,13 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> List[Finger]:
       script = nm[ip][proto][port]['script'] if 'script' in nm[ip][proto][
           port] else None
       ans.append((port, nm[ip][proto][port]["name"], service, script))
+  
+  honeypot_check(ans)
   return ans
 
 def devices_check(ip:Ip,nm: nmap.PortScanner):
   '''检测设备信息'''
-
-
+  
   try:
     headers = nm[ip]['tcp'][80]['script']['http-headers']
     if 'Server: Synology' in headers:
@@ -97,3 +99,5 @@ def honeypot_check(finger: List[Finger]):
 
 if __name__ == '__main__':
   op(finger_scan('113.30.191.68', [2222]))
+  # op(finger_scan(
+  #   '211.22.90.152', {49152, 8000, 554, 80, 9010}))
