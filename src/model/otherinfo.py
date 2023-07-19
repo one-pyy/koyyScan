@@ -1,11 +1,11 @@
 from typing import Tuple, List, NamedTuple, Dict
 
 class Device(NamedTuple):
-    _type: str
+    type: str
     name: str
 
     def __str__(self) -> str:
-        return f"{self._type}/{self.name}"
+        return f"{self.type}/{self.name}"
 
 class Honeypot(NamedTuple):
     port: int

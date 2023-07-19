@@ -16,7 +16,7 @@ if __name__ == '__main__':
   cmd_args = parse_args()
   gconf.update(**cmd_args)
   
-  if "run_ip_port" and 1:
+  if "run_ip_port" and 0:
     ip_alive = list(test_ip(gconf['ip']))
     ip_alive.sort()
     lg.info(f"IP alive: {ip_alive}")
@@ -35,9 +35,12 @@ if __name__ == '__main__':
     with ThreadPoolExecutor(max_workers=80) as pool:
       futures = []
       for ip, ports in ip_port_alive.items():
-        future = pool.submit(finger_scan, ip, ports)
-        future.ip = ip
-        futures.append(future)
+        if ports:
+          future = pool.submit(finger_scan, ip, ports)
+          future.ip = ip
+          futures.append(future)
+        else:
+          ...#TODO
       
       for future in as_completed(futures):
         print(future.ip, future.result())

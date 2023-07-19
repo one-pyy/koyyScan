@@ -26,7 +26,7 @@ def test_port(ip: Ip, ports: List[Port]):
     for rsp in ans[0].res]
   return op_ports
 
-ip_port_pattern = r"Discovered open port (\d+)/[^ ]* on ([.\d]+)"
+ip_port_pattern = r"Discovered open port (\d{1,5})/[^ ]* on (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"
 ip_port_reg = re.compile(ip_port_pattern)
 def run_mas_shell(shell: str):
   lg.debug(f"run command: {shell}")
