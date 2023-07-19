@@ -212,12 +212,54 @@ class honeypots_check:
 
 
   def check_kippo(self, host):
+    try:
+      print(f'[-] Check kippo')
+      if 'Linux' in self.nm[ip]['osmatch'][0]['name'] and 5000 in self.nm[ip]['tcp']:
+        pass
+      else:
+        return False
+      if re.search(r'Synology',str(self.nm[ip]['tcp'][5000]['banner']),re.IGNORECASE):
+        return True
+      elif re.search(r'Synology',str(self.nm[ip]['tcp'][80]['script']['http-title'] ),re.IGNORECASE):
+        return True
+    except (KeyError, IndexError):
+      print(f"[x] {ip} no correct script")
+    except:
+      traceback.print_exc()
+      sys.exit(0)
+    return False
     return 'Kippo' in self.scanner[host]['tcp'][2222]['banner']
   
   def check_glastopf(self, host):
+    try:
+      print(f'[-] Check glastopf')
+      if re.search(r'Glastopf', str(self.nm[host]['tcp']),re.IGNORECASE):
+        return True
+    except (KeyError, IndexError):
+      print(f"[x] {host} no correct script")
+    except:
+      traceback.print_exc()
+      sys.exit(0)
+    return False
     return 'Glastopf' in self.scanner[host]['tcp'][80]['banner']
 
   def check_hfish(self, host):
+    try:
+      print(f'[-] Check hfish')
+      if 'Linux' in self.nm[ip]['osmatch'][0]['name'] and 5000 in self.nm[ip]['tcp']:
+        pass
+      else:
+        return False
+      if re.search(r'Synology',str(self.nm[ip]['tcp'][5000]['banner']),re.IGNORECASE):
+        return True
+      elif re.search(r'Synology',str(self.nm[ip]['tcp'][80]['script']['http-title'] ),re.IGNORECASE):
+        return True
+    except (KeyError, IndexError):
+      print(f"[x] {ip} no correct script")
+    except:
+      traceback.print_exc()
+      sys.exit(0)
+    return False
     return 'HFish' in self.scanner[host]['osmatch'][0]['name']
       
 def _default_output(_nm: nmap.PortScanner):

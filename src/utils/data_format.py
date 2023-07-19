@@ -3,6 +3,7 @@ from typing import List,Tuple
 from ..model import Finger,Service,Device,Honeypot
 from .components import *
 from functools import wraps
+import re
 '''
 input_data = [
     (22,'tcp','ssh/N'),
@@ -15,7 +16,7 @@ fingers:
 
 
 
-def finger_filter(data:dict, comp_type: str):
+def finger_filter(data:dict, comp_type: str,script: dict = None):
   '''
   过滤不在列表中的service和protocol,comp_type指定为service或protocol
   '''
@@ -26,9 +27,13 @@ def finger_filter(data:dict, comp_type: str):
       data['protocol'] = protocol
   elif comp_type == "servise":
       ans = list()
-      for apps in data:
-          if apps.name in services:
-              ans.append(str(apps))
+      try:
+        for serve in services:
+            if re.search(serve,data['service']['product'],re.IGNORECASE):
+                ans.append(str(Service(serve,data['service']['version'])))
+            
+      except:
+        pass
       return ans
   
   return data
@@ -45,7 +50,7 @@ def finger_format(host: str,finger: Finger,devices: List[Device] = None ,honeypo
     for port, proto, service, script in finger:
         service_data = finger_filter({'port': port, 'protocol': proto},"protocol")
         if service is not None :
-            service_data['service_app'] = finger_filter([service],"servise") if len(finger_filter([service],"servise"))>0 else None
+            service_data['service_app'] = finger_filter([service],"servise",script) if len(finger_filter([service],"servise"))>0 else None
         else:
             service_data['service_app'] = None
         
