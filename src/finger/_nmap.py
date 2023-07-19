@@ -15,7 +15,7 @@ make_parent_top(2)
 from ..model import Ip, Port, Protocal, Service, Finger, Version, Honeypot
 
 
-def finger_scan(ip: Ip, ports: Iterable[Port]) -> List[Finger]:
+def finger_scan(ip: Ip, ports: Iterable[Port]) -> Tuple[List[Finger],Device,Honeypot]:
   '''
   根据已存活主机、端口列表探测指纹信息,返回当前主机的指纹信息列表
   '''
@@ -41,7 +41,7 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> List[Finger]:
 
   _default_output(nm) 
   dc = devices_check(ip, nm)
-  print(dc.get_result())
+  # print(dc.get_result())
 
   ans = []
   # 输出TCP\UDP协议及端口状态
@@ -56,7 +56,7 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> List[Finger]:
           port] else None
       ans.append((port, nm[ip][proto][port]["name"], service, script))
 
-  return ans
+  return (ans,dc.get_result(),None)
 
 
 class devices_check:
@@ -69,7 +69,12 @@ class devices_check:
   
   def get_result(self):
     self.parse_result()
-    return self.result
+    devices = []
+    # print(self.result)
+    for key, value in self.result.items():
+      # print(Device(key,value))
+      devices.append(str(Device(key,value)))
+    return devices
   
   def parse_result(self):
     host = next(iter(self.nm.all_hosts()))
@@ -93,12 +98,13 @@ class devices_check:
   def check_pfsense(self, ip):
     '''pfSense检测'''
     try:
+      print(f'[-] Check pfSense')
       if 'Server: pfSense' in self.nm[ip]['tcp'][80]['script']['http-headers']:
         return True
       elif 'FreeBSD' in str(self.nm[ip]['osmatch'][0]['name']):
         return True
     except (KeyError, IndexError):
-      print(f"{ip} no correct script")
+      print(f"[x] {ip} no correct script")
     except:
       traceback.print_exc()
       sys.exit(0)
@@ -107,6 +113,7 @@ class devices_check:
   def check_hikvision(self, ip):
     # 检查Hikvision特征
     try:
+      print(f'[-] Check hikvision')
       if 'Hikvision IPCam control port' in self.nm[ip]['tcp'][8000]['product']:
          return True
       elif 'Hikvision' in str(self.nm[ip]['osmatch'][0]['name']):
@@ -114,7 +121,7 @@ class devices_check:
       elif 'Hikvision' in self.nm[ip]['tcp'][80]['script']['http-title']:
          return True
     except (KeyError, IndexError):
-      print(f"{ip} no correct script")
+      print(f"[x] {ip} no correct script")
     except:
       traceback.print_exc()
       sys.exit(0)
@@ -123,6 +130,7 @@ class devices_check:
   def check_dahua(self, ip):
     # 检查Dahua特征
     try:
+      print(f'[-] Check Dahua')
       if 'Linux' in self.nm[ip]['osmatch'][0]['name']:
         pass
       else:
@@ -134,7 +142,7 @@ class devices_check:
       elif re.search(r'Dahua',str(self.nm[ip]['tcp'][80]['script']['http-title']),re.IGNORECASE):
         return True
     except (KeyError, IndexError):
-      print(f"{ip} no correct script")
+      print(f"[x] {ip} no correct script")
     except:
       traceback.print_exc()
       sys.exit(0)
@@ -143,6 +151,7 @@ class devices_check:
   def check_cisco(self, ip):
       # 检查Cisco特征
     try:
+      print(f'[-] Check Cisco')
       if 'IOS' in str(self.nm[ip]['osmatch'][0]) and 23 in self.nm[ip]['tcp'] and 22 in self.nm[ip]['tcp']:
         pass
       else:
@@ -152,7 +161,7 @@ class devices_check:
       elif re.search(r'Cisco', str(self.nm[ip]['tcp'][80]['script']['http-title']),re.IGNORECASE):
         return True
     except (KeyError, IndexError):
-      print(f"{ip} no correct script")
+      print(f"[x] {ip} no correct script")
     except:
       traceback.print_exc()
       sys.exit(0)
@@ -161,6 +170,7 @@ class devices_check:
   def check_synology(self, ip):
       # 检查Synology特征
     try:
+      print(f'[-] Check Synology')
       if 'Linux' in self.nm[ip]['osmatch'][0]['name'] and 5000 in self.nm[ip]['tcp']:
         pass
       else:
@@ -170,7 +180,7 @@ class devices_check:
       elif re.search(r'Synology',str(self.nm[ip]['tcp'][80]['script']['http-title'] ),re.IGNORECASE):
         return True
     except (KeyError, IndexError):
-      print(f"{ip} no correct script")
+      print(f"[x] {ip} no correct script")
     except:
       traceback.print_exc()
       sys.exit(0)
@@ -194,7 +204,7 @@ def _default_output(_nm: nmap.PortScanner):
     json.dump(order_dict, open(f'./result/json/{host}_nm.json', 'w'), indent=2, ensure_ascii=False)
     print(f"[*] Host:{host} Saved.")
   except (KeyError, IndexError):
-    print(f"host not alive")
+    print(f"[x] host not alive")
     # sys.exit(0)
   except FileExistsError:
     print(f"[x] Host:{host} JsonFile Exists.")

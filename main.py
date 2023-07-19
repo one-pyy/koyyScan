@@ -44,7 +44,9 @@ if __name__ == '__main__':
           ...#TODO
       
       for future in tqdm(as_completed(futures)):
-        json.dump(future.result(), open(f"./result/finger/{future.ip}", 'w'))
+        json.dump(finger_format(future.ip,future.result()[0],future.result()[1],str(future.result()[2])),open(f'./result/format_json/{future.ip}.json', 'w'), indent=2, ensure_ascii=False)
+        # print(future.ip, future.result())
+        # print(finger_format(future.ip,future.result()[0],future.result()[1],future.result()[2]))
   
   # print(list(cmd_args['ip']))
   # result = list()
