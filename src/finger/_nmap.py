@@ -5,6 +5,7 @@ import xmltodict
 import sys
 import traceback
 from typing import *
+import pickle
 import re
 from objprint import op
 from pitricks.utils import make_parent_top
@@ -187,8 +188,9 @@ def honeypot_check(fingers: List[Finger]):
 
 def _default_output(_nm: nmap.PortScanner):
   try:
-    order_dict = xmltodict.parse(_nm.get_nmap_last_output())
     host = _nm.all_hosts()[0]
+    pickle.dump(_nm, open(f'./result/pickle/{host}.pkl', 'wb'))
+    order_dict = xmltodict.parse(_nm.get_nmap_last_output())
     json.dump(order_dict, open(f'./result/json/{host}_nm.json', 'w'), indent=2, ensure_ascii=False)
     print(f"[*] Host:{host} Saved.")
   except (KeyError, IndexError):
