@@ -29,48 +29,37 @@
 
    接收输入, 解析为参数并传给控制器
 
-   输入列表(\*为必须):
-
-   - *ip段
-
-   - *结果输出文件名
-
-   - port
-
-     default: top500
-
-   - 不检测ip存活
-
-     直接扫描端口
-
-   - proxy
-
-     只支持socks5
-
-   - threads
-
-     线程数, 默认1000
+   ```
+   usage: main.py [-h] [-i IP] [-o OUTPUT] [-tp TOP_PORT_NUM] [-atp ALIVE_TOP_PORT_NUM] [--proxy PROXY] [-t THREADS]
+   
+   optional arguments:
+     -h, --help            show this help message and exit
+     -i IP, --ip IP        IP range to scan (default '211.22.90.1,211.22.90.152')
+     -o OUTPUT, --output OUTPUT
+                           Output filename
+     -tp TOP_PORT_NUM, --top-port-num TOP_PORT_NUM
+                           scan port(default top 1000)
+     -atp ALIVE_TOP_PORT_NUM, --alive-top-port-num ALIVE_TOP_PORT_NUM
+                           scan port when alive(default top 2500)
+     --proxy PROXY         SOCKS5 proxy to use
+     -t THREADS, --threads THREADS
+                           Number of threads (default 1750)
+   ```
 
 1. ip探测器
 
    采用多种技术判断:
 
-   - s
    - icmp包
    - 与端口探测器结合, 当探测到端口开放时判定存活
 
 1. 端口探测器
 
-   采用多种技术判断:
-
    - syn扫描
-   - TCP Null扫描+ACK扫描
-
-   加入cache
 
 1. 协议&指纹
 
-   多种来源联合判断, 同时加入我们的自定义指纹逻辑
+   nmap进行扫描, 同时加入我们的自定义指纹逻辑
 
    ```python
    Port = int

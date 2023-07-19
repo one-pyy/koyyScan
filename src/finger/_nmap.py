@@ -8,7 +8,7 @@ from pitricks.utils import make_parent_top
 
 make_parent_top(2)
 
-from ..model import Ip, Port, Protocal, Service, Finger, Version
+from ..model import Ip, Port, Protocal, Service, Finger, Version, Honeypot
 
 
 def finger_scan(ip: Ip, ports: Iterable[Port]) -> List[Finger]:
@@ -93,10 +93,13 @@ def devices_check(ip:Ip,nm: nmap.PortScanner):
     sys.exit(0)
 
 
-def honeypot_check(finger: List[Finger]):
-  pass
+def honeypot_check(fingers: List[Finger]):
+  ans = []
+  for f in fingers:
+    if f[0]=='2222' and f[3]['banner'] == "SSH-2.0-OpenSSH_5.1p1 Debian-5":
+      ans.append(Honeypot(2222, "Kippo"))
 
-def _default_output(_nm: nmap.PortScanner()):
+def _default_output(_nm: nmap.PortScanner):
   order_dict = xmltodict.parse(_nm.get_nmap_last_output())
   host = _nm.all_hosts()[0]
   with open(f'./result/json/{host}_nm.json','w') as f:
