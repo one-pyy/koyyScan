@@ -1,1 +1,0 @@
-from .finger import port_discover

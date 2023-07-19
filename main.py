@@ -16,20 +16,22 @@ if __name__ == '__main__':
   cmd_args = parse_args()
   gconf.update(**cmd_args)
   
-  ip_alive = list(test_ip(gconf['ip']))
-  ip_alive.sort()
-  lg.info(f"IP alive: {ip_alive}")
+  if "run_ip_port" and 1:
+    ip_alive = list(test_ip(gconf['ip']))
+    ip_alive.sort()
+    lg.info(f"IP alive: {ip_alive}")
+    
+    ip_port_alive = test_port_ms(gconf['ip'], ip_alive, gconf['port'], gconf['aport'])
+    for ip in ip_alive:
+      if ip not in ip_port_alive:
+        ip_port_alive[ip] = set()
+    lg.info(f"IP-port alive: {ip_port_alive}")
+    
+    json.dump(ip_port_alive, open(f"tmp.json", 'w'),
+              indent=2, ensure_ascii=False)
   
-  ip_port_alive = test_port_ms(gconf['ip'], ip_alive, gconf['port'], gconf['aport'])
-  for ip in ip_alive:
-    if ip not in ip_port_alive:
-      ip_port_alive[ip] = set()
-  lg.info(f"IP-port alive: {ip_port_alive}")
-  
-  json.dump(ip_port_alive, open(f"tmp.json", 'w'),
-            indent=2, ensure_ascii=False)
-  
-  def run_finger():
+  if "run_finger" and 1:
+    ip_port_alive = json.load(open(f"tmp.json", 'r'))
     with ThreadPoolExecutor(max_workers=80) as pool:
       futures = []
       for ip, ports in ip_port_alive.items():
@@ -39,7 +41,6 @@ if __name__ == '__main__':
       
       for future in as_completed(futures):
         print(future.ip, future.result())
-  # run_finger()
   
   # print(list(cmd_args['ip']))
   # result = list()
