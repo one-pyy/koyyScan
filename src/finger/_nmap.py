@@ -6,8 +6,10 @@ import sys
 import traceback
 from typing import *
 import pickle
+from pathlib import Path
 import re
 from objprint import op
+import logging as lg
 from pitricks.utils import make_parent_top
 
 make_parent_top(2)
@@ -19,27 +21,32 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> Tuple[List[Finger],Device,Hone
   '''
   根据已存活主机、端口列表探测指纹信息,返回当前主机的指纹信息列表
   '''
-  try:
-    #创建端口扫描对象
-    nm = nmap.PortScanner()
-  except nmap.PortScannerError:
-    print('Nmap not found', sys.exc_info()[0])
-    sys.exit(0)
-  except:
-    traceback.print_exc()
-    sys.exit(0)
+  if Path(f"./result/pickle/{ip}.pkl").exists():
+    nm = pickle.load(open(f"./result/pickle/{ip}.pkl", 'rb'))
+    lg.debug(f"load pickle file for {ip}")
+    
+  else:
+    try:
+      #创建端口扫描对象
+      nm = nmap.PortScanner()
+    except nmap.PortScannerError:
+      print('Nmap not found', sys.exc_info()[0])
+      sys.exit(0)
+    except:
+      traceback.print_exc()
+      sys.exit(0)
 
-  try:
-    #调用nmap扫描方法
-    nm.scan(
-        ip,
-        ports=','.join(map(str, ports)),
-        arguments=f'-v -sS -Pn -sV -A -T4 --script=banner,ssh-hostkey,tls-nextprotoneg,ssl-enum-ciphers,http-favicon,http-title,http-traceroute,telnet-ntlm-info -oN ./result/_nmap/{ip}_nm')
-  except Exception as e:
-    traceback.print_exc()
-    raise
+    try:
+      #调用nmap扫描方法
+      nm.scan(
+          ip,
+          ports=','.join(map(str, ports)),
+          arguments=f'-v -sS -Pn -sV -A -T4 --script=banner,ssh-hostkey,tls-nextprotoneg,ssl-enum-ciphers,http-favicon,http-title,http-traceroute,telnet-ntlm-info -oN ./result/_nmap/{ip}_nm')
+    except Exception as e:
+      traceback.print_exc()
+      raise
 
-  _default_output(nm) 
+    _default_output(nm) 
   dc = devices_check(ip, nm)
   # print(dc.get_result())
 
