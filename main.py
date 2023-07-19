@@ -17,7 +17,7 @@ if __name__ == '__main__':
   cmd_args = parse_args()
   gconf.update(**cmd_args)
   
-  if "run_ip_port" and 0:
+  if "run_ip_port" and 1:
     ip_alive = list(test_ip(gconf['ip']))
     ip_alive.sort()
     lg.info(f"IP alive: {ip_alive}")
@@ -46,7 +46,8 @@ if __name__ == '__main__':
       
       for future in tqdm(as_completed(futures)):
         res = future.result()
-        
+        if res is None:
+          continue
         json.dump((fingers:=finger_format(future.ip, res[0], res[1], str(res[2]))),
                   open(f'./result/format_json/{future.ip}.json', 'w'), indent=2, ensure_ascii=False)
         for k,v in fingers.items():

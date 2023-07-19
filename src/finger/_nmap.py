@@ -29,7 +29,7 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> Tuple[List[Finger],Device,Hone
     lg.debug(f"load pickle file for {ip}")
     
   else:
-    return None
+    # return None
     try:
       #创建端口扫描对象
       nm = nmap.PortScanner()
