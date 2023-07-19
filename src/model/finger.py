@@ -5,7 +5,10 @@ class Version:
   def __init__(self, ver: str = "") -> None:
     ver_m = re.search(r'[\d.]+', ver)
     ver_list: List[str] = ver_m.group(0).split('.') if ver_m else []
-    self.ver: Tuple[int, ...] = tuple(int(x) for x in ver_list)
+    try:
+      self.ver: Tuple[int, ...] = tuple(int(x) for x in ver_list)
+    except:
+      self.ver = ()
 
   def __gt__(self, other: 'Version') -> bool:
     return self.ver > other.ver

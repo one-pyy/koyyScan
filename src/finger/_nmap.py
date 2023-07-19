@@ -22,7 +22,10 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> Tuple[List[Finger],Device,Hone
   根据已存活主机、端口列表探测指纹信息,返回当前主机的指纹信息列表
   '''
   if Path(f"./result/pickle/{ip}.pkl").exists():
-    nm = pickle.load(open(f"./result/pickle/{ip}.pkl", 'rb'))
+    try:
+      nm = pickle.load(open(f"./result/pickle/{ip}.pkl", 'rb'))
+    except:
+      return None
     lg.debug(f"load pickle file for {ip}")
     
   else:

@@ -32,8 +32,9 @@ if __name__ == '__main__':
               indent=2, ensure_ascii=False)
   
   if "run_finger" and 1:
+    ans = {}
     ip_port_alive = json.load(open(f"tmp.json", 'r'))
-    with ThreadPoolExecutor(max_workers=100) as pool:
+    with ThreadPoolExecutor(max_workers=10) as pool:
       futures = []
       for ip, ports in ip_port_alive.items():
         if ports and ports.__len__()<100:
@@ -45,8 +46,15 @@ if __name__ == '__main__':
       
       for future in tqdm(as_completed(futures)):
         res = future.result()
-        json.dump(finger_format(future.ip, res[0], res[1], str(res[2])),open(f'./result/format_json/{future.ip}.json', 'w'), indent=2, ensure_ascii=False)
-        print(future.ip, res)
+        
+        json.dump((fingers:=finger_format(future.ip, res[0], res[1], str(res[2]))),
+                  open(f'./result/format_json/{future.ip}.json', 'w'), indent=2, ensure_ascii=False)
+        for k,v in fingers:
+          res[k]=v
+    
+  json.dump(res, 
+            open(gconf['output'], 'w'))
+        # print(future.ip, res)
         # print(future.ip, future.result())
         # print(finger_format(future.ip,future.result()[0],future.result()[1],future.result()[2]))
   

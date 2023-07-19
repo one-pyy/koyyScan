@@ -28,6 +28,8 @@ def finger_filter(data:dict, comp_type: str,script: dict = None):
   elif comp_type == "servise":
       ans = list()
       try:
+        data_js = json.dumps(data)
+        print(data_js)
         for serve in services:
             if re.search(serve,data['service']['product'],re.IGNORECASE):
                 ans.append(str(Service(serve,data['service']['version'])))
