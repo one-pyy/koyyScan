@@ -4,6 +4,8 @@ import json
 import logging as lg
 import os
 from uuid import uuid4
+import pexpect
+import re
 
 from scapy.layers.inet import IP, TCP
 from scapy.sendrecv import sr1, sr
@@ -25,14 +27,25 @@ def test_port(ip: Ip, ports: List[Port]):
     for rsp in ans[0].res]
   return op_ports
 
+ip_port_pattern = r"Discovered open port (\d+)/[^ ]* on ([.\d]+)"
+ip_port_reg = re.compile(ip_port_pattern)
+def run_mas_shell(shell: str):
+  ret = []
+  proc = pexpect.spawn(shell)
+  while True:
+    proc.expect(["waiting -[2-9]", pexpect.EOF, ip_port_pattern])
+    re_ans = re.findall(ip_port_reg, proc.after.decode('utf-8'))
+    if re_ans:
+      port, ip = re_ans[0]
+      ret.append((ip, port))
+    else:
+      break
+  proc.close()
+  return ret
+
 def run_mas(hosts: Iterable[Ip], ports: List[Port]):
-  os.makedirs("./tmp", exist_ok=True)
-  filename = f"./tmp/masscan_{uuid4()}.json"
-  os.system(
-    f"masscan -p {','.join(map(str, ports))} {','.join(hosts)} --rate {gconf['threads']} -oJ {filename}")
-  print()
-  res = json.load(open(filename))
-  return res
+  return run_mas_shell(
+    f"masscan -p {','.join(map(str, ports))} {','.join(hosts)} --rate {gconf['threads']}")
 
 TOP_250 = get_top_ports(250)
 def test_port_ms(hosts: List[Ip], alive_ip: List[Ip], 
@@ -43,7 +56,7 @@ def test_port_ms(hosts: List[Ip], alive_ip: List[Ip],
   def t(hosts: Iterable[Ip], ports: List[Port]):
     scan_ans = run_mas(hosts, ports)
     for e in scan_ans:
-      ret.setdefault(e['ip'], set()).add(e['ports'][0]['port'])
+      ret.setdefault(e[0], set()).add(e[1])
   
   for _ in range(repeat):
     t(hosts, TOP_250)
