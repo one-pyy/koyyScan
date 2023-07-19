@@ -21,6 +21,9 @@ class Version:
   
   def __str__(self) -> str:
     return '.'.join(str(x) for x in self.ver) or "N"
+  
+  def __repr__(self) -> str:
+    return self.__str__()
 Ver = Version
 
 Ip = str
@@ -32,6 +35,9 @@ class Service(NamedTuple):
   
   def __str__(self) -> str:
     return f"{self.name}/{self.ver}"
+  
+  def __repr__(self) -> str:
+    return self.__str__()
 Script = dict
   
 @classmethod

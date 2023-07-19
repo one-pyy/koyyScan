@@ -6,6 +6,9 @@ class Device(NamedTuple):
 
     def __str__(self) -> str:
         return f"{self.type_}/{self.name}"
+    
+    def __repr__(self) -> str:
+        return self.__str__()
 
 class Honeypot(NamedTuple):
     port: int
@@ -13,6 +16,8 @@ class Honeypot(NamedTuple):
 
     def __str__(self) -> str:
         return f"{str(self.port)}/{self.name}"
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 
