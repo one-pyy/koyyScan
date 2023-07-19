@@ -28,7 +28,7 @@ def finger_filter(data:dict, comp_type: str):
       ans = list()
       for apps in data:
           if apps.name in services:
-              ans.append(apps)
+              ans.append(str(apps))
       return ans
   
   return data
