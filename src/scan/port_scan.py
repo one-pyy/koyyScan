@@ -33,10 +33,9 @@ def run_mas_shell(shell: str):
   ret = []
   proc = pexpect.spawn(shell)
   while True:
-    proc.expect(["waiting -[2-9]", pexpect.EOF, ip_port_pattern])
-    re_ans = re.findall(ip_port_reg, proc.after.decode('utf-8'))
-    if re_ans:
-      port, ip = re_ans[0]
+    proc.expect(["waiting -2", pexpect.EOF, ip_port_pattern])
+    if proc.after not in (b"waiting -2", pexpect.EOF):
+      port, ip = re.findall(ip_port_reg, proc.after.decode('utf-8'))[0]
       ret.append((ip, port))
     else:
       break
