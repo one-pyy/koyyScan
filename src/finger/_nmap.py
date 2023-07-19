@@ -75,7 +75,7 @@ def devices_check(ip:Ip,nm: nmap.PortScanner):
     os_match = nm[ip]['osmatch'][0]
     if os_match and os_match['name'] == 'Cisco IOS':
       print(f"{ip} is Cisco Router")
-  except IndexError:
+  except (KeyError, IndexError):
     print(f"{ip} no osmatch")
   except:
     traceback.print_exc()
