@@ -54,7 +54,7 @@ def finger_format(host: str,finger: Finger,devices: List[Device] = None ,honeypo
     data[host]['deviceinfo'] = devices 
     data[host]['honeypot'] = honeypot
     if status == 1:
-        json_data = json.dumps(data, indent=4)
+        json_data = json.dumps(data, indent=2)
         return json_data
     else:
         return data

@@ -185,16 +185,33 @@ class devices_check:
       sys.exit(0)
     return False
 
-  def honeypot_check(finger: List[Finger]):
-    pass
+class honeypots_check:
+  def __init__(self, ip: Ip, nm: nmap.PortScanner) -> None:
+    super().__init__()
+    self.ip = ip
+    self.nm = nm
+    self.result = Honeypot()
 
-def honeypot_check(fingers: List[Finger]):
-  ans = []
-  for f in fingers:
-    if f[0]=='2222' and f[3]['banner'] == "SSH-2.0-OpenSSH_5.1p1 Debian-5":
-      ans.append(Honeypot(2222, "Kippo"))
+  def parse_result(self):
+    host = next(iter(self.scanner.all_hosts()))
+    
+    if self.check_kippo(host):
+        self.result.name = 'Kippo'
+    if self.check_glastopf(host):
+        self.result.name = 'Glastopf'
+    if self.check_hfish(host):
+        self.result.name = 'HFish'
 
 
+  def check_kippo(self, host):
+    return 'Kippo' in self.scanner[host]['tcp'][2222]['banner']
+  
+  def check_glastopf(self, host):
+    return 'Glastopf' in self.scanner[host]['tcp'][80]['banner']
+
+  def check_hfish(self, host):
+    return 'HFish' in self.scanner[host]['osmatch'][0]['name']
+      
 def _default_output(_nm: nmap.PortScanner):
   try:
     order_dict = xmltodict.parse(_nm.get_nmap_last_output())
