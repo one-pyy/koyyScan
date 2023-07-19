@@ -49,10 +49,10 @@ if __name__ == '__main__':
         
         json.dump((fingers:=finger_format(future.ip, res[0], res[1], str(res[2]))),
                   open(f'./result/format_json/{future.ip}.json', 'w'), indent=2, ensure_ascii=False)
-        for k,v in fingers:
-          res[k]=v
+        for k,v in fingers.items():
+          ans[k]=v
     
-  json.dump(res, 
+  json.dump(ans, 
             open(gconf['output'], 'w'))
         # print(future.ip, res)
         # print(future.ip, future.result())
