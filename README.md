@@ -21,6 +21,10 @@
 }
 ```
 
+## 示例
+
+`python main.py -i YOURIP -o OUTFILE`
+
 ## 模块
 
 ![image-20230717163308767](README.assets/image-20230717163308767.png)
@@ -41,7 +45,6 @@
                            scan port(default top 1000)
      -atp ALIVE_TOP_PORT_NUM, --alive-top-port-num ALIVE_TOP_PORT_NUM
                            scan port when alive(default top 2500)
-     --proxy PROXY         SOCKS5 proxy to use
      -t THREADS, --threads THREADS
                            Number of threads (default 1750)
    ```
