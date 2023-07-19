@@ -36,7 +36,7 @@ if __name__ == '__main__':
     with ThreadPoolExecutor(max_workers=100) as pool:
       futures = []
       for ip, ports in ip_port_alive.items():
-        if ports:
+        if ports and ports.__len__()<100:
           future = pool.submit(finger_scan, ip, ports)
           future.ip = ip
           futures.append(future)

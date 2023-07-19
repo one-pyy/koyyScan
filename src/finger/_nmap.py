@@ -26,6 +26,7 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> Tuple[List[Finger],Device,Hone
     lg.debug(f"load pickle file for {ip}")
     
   else:
+    return None
     try:
       #创建端口扫描对象
       nm = nmap.PortScanner()
@@ -59,8 +60,7 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> Tuple[List[Finger],Device,Hone
     for port in lport:
       service = Service(nm[ip][proto][port]["product"].lower(),
                         Version(nm[ip][proto][port]["version"]))
-      script = nm[ip][proto][port]['script'] if 'script' in nm[ip][proto][
-          port] else None
+      script = nm[ip][proto][port]['script'] if 'script' in nm[ip][proto][port] else None
       ans.append((port, nm[ip][proto][port]["name"], service, script))
 
   return (ans,dc.get_result(),None)

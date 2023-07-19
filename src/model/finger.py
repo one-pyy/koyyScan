@@ -38,11 +38,12 @@ class Service(NamedTuple):
   
   def __repr__(self) -> str:
     return self.__str__()
+  
+  @classmethod
+  def parse_nmap(cls, input: Dict[str, str]) -> 'Finger':
+    ...
 Script = dict
   
-@classmethod
-def parse_nmap(cls, input: Dict[str, str]) -> 'Finger':
-  ...
 
 
 Finger = List[Tuple[Port, Protocal, List[Service], Script]]
