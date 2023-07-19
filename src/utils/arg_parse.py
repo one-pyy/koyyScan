@@ -13,7 +13,7 @@ def parse_args():
   p.add_argument("-atp", "--alive-top-port-num", default=2500, help="scan port when alive(default top 2500)")
   # p.add_argument("-np", "--no-ping", action="store_true", help="Don't check if IP is alive, just scan ports")
   p.add_argument("--proxy", help="SOCKS5 proxy to use")
-  p.add_argument("-t", "--threads", default=1750, type=int, help="Number of threads (default 2000)")
+  p.add_argument("-t", "--threads", default=1750, type=int, help="Number of threads (default 1750)")
 
   args = vars(p.parse_args())
   args['ip'] = get_hosts(args['ip'])
