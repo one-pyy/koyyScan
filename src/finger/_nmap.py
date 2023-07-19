@@ -1,8 +1,11 @@
-import nmap,json,xmltodict
+from ..model import Ip, Port, Protocal, Service, Finger, Version, Device, Honeypot
+import nmap
+import json
+import xmltodict
 import sys
 import traceback
 from typing import *
-
+import re
 from objprint import op
 from pitricks.utils import make_parent_top
 
@@ -30,14 +33,14 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> List[Finger]:
     nm.scan(
         ip,
         ports=','.join(map(str, ports)),
-        arguments=
-        f'-v -sS -Pn -sV -A -T4 --script=banner,ssl-cert,http-title,http-headers -oN ./result/_nmap/{ip}_nm')
+        arguments=f'-v -sS -Pn -sV -A -T4 --script=banner,ssh-hostkey,tls-nextprotoneg,ssl-enum-ciphers,http-favicon,http-title,http-traceroute,telnet-ntlm-info -oN ./result/_nmap/{ip}_nm')
   except Exception as e:
     traceback.print_exc()
     raise
-  _default_output(nm)
-  devices_check(ip, nm)
-  
+
+  _default_output(nm) 
+  dc = devices_check(ip, nm)
+  print(dc.get_result())
 
   ans = []
   # 输出TCP\UDP协议及端口状态
@@ -51,47 +54,129 @@ def finger_scan(ip: Ip, ports: Iterable[Port]) -> List[Finger]:
       script = nm[ip][proto][port]['script'] if 'script' in nm[ip][proto][
           port] else None
       ans.append((port, nm[ip][proto][port]["name"], service, script))
-  
-  honeypot_check(ans)
+
   return ans
 
-def devices_check(ip:Ip,nm: nmap.PortScanner):
-  '''检测设备信息'''
+
+class devices_check:
+  def __init__(self, ip: Ip, nm: nmap.PortScanner) -> None:
+    super().__init__()
+    self.ip = ip
+    self.nm = nm
+    # self._type = _type
+    self.result = dict()
   
-  try:
-    headers = nm[ip]['tcp'][80]['script']['http-headers']
-    if 'Server: Synology' in headers:
-      print(f"{ip} is Synology NAS")
-    elif 'Server: pfSense' in headers:
-      print(f"{ip} is pfSense Firewall")
-  except (KeyError, IndexError):
-    print(f"{ip} no http-headers")
-    # sys.exit(0)
-  except:
-    traceback.print_exc()
-    sys.exit(0)
+  def get_result(self):
+    self.parse_result()
+    return self.result
+  
+  def parse_result(self):
+    host = next(iter(self.nm.all_hosts()))
 
-  try:
-    os_match = nm[ip]['osmatch'][0]
-    if os_match and os_match['name'] == 'Cisco IOS':
-      print(f"{ip} is Cisco Router")
-  except (KeyError, IndexError):
-    print(f"{ip} no osmatch")
-  except:
-    traceback.print_exc()
-    sys.exit(0)
+    if self.check_pfsense(host):
+        self.result['firewall'] = 'pfsense'
 
-  try:
-    title = nm[ip]['tcp'][80]['script']['http-title']
-    if 'Hikvision' in title:
-      print(f"{ip} may be Hikvision camera")
-  except (KeyError, IndexError):
-    print(f"{ip} no http-title")
-    # sys.exit(0)
-  except:
-    traceback.print_exc()
-    sys.exit(0)
+    if self.check_hikvision(host):
+        self.result['Webcam'] = 'Hikvision'
 
+    if self.check_dahua(host) or self.check_cisco(host):
+        self.result['switch'] = []
+        if self.check_dahua(host):
+            self.result['switch'].append('dahua')
+        if self.check_cisco(host):
+            self.result['switch'].append('cisco')
+
+    if self.check_synology(host):
+        self.result['Nas'] = 'synology'
+
+  def check_pfsense(self, ip):
+    '''pfSense检测'''
+    try:
+      if 'Server: pfSense' in self.nm[ip]['tcp'][80]['script']['http-headers']:
+        return True
+      elif 'FreeBSD' in str(self.nm[ip]['osmatch'][0]['name']):
+        return True
+    except (KeyError, IndexError):
+      print(f"{ip} no correct script")
+    except:
+      traceback.print_exc()
+      sys.exit(0)
+    return False
+
+  def check_hikvision(self, ip):
+    # 检查Hikvision特征
+    try:
+      if 'Hikvision IPCam control port' in self.nm[ip]['tcp'][8000]['product']:
+         return True
+      elif 'Hikvision' in str(self.nm[ip]['osmatch'][0]['name']):
+         return True
+      elif 'Hikvision' in self.nm[ip]['tcp'][80]['script']['http-title']:
+         return True
+    except (KeyError, IndexError):
+      print(f"{ip} no correct script")
+    except:
+      traceback.print_exc()
+      sys.exit(0)
+    return False
+
+  def check_dahua(self, ip):
+    # 检查Dahua特征
+    try:
+      if 'Linux' in self.nm[ip]['osmatch'][0]['name']:
+        pass
+      else:
+        return False
+      if re.search(r'Dahua',str(self.nm[ip]['tcp'][8000]),re.IGNORECASE):
+        return True
+      elif re.search(r'Dahua',str(self.nm[ip]['tcp'][80]['script']['http-favicon']),re.IGNORECASE):
+        return True
+      elif re.search(r'Dahua',str(self.nm[ip]['tcp'][80]['script']['http-title']),re.IGNORECASE):
+        return True
+    except (KeyError, IndexError):
+      print(f"{ip} no correct script")
+    except:
+      traceback.print_exc()
+      sys.exit(0)
+    return False
+
+  def check_cisco(self, ip):
+      # 检查Cisco特征
+    try:
+      if 'IOS' in str(self.nm[ip]['osmatch'][0]) and 23 in self.nm[ip]['tcp'] and 22 in self.nm[ip]['tcp']:
+        pass
+      else:
+        return False
+      if re.search(r'Cisco', str(self.nm[ip]['tcp'][23]['script']['banner']),re.IGNORECASE):
+        return True
+      elif re.search(r'Cisco', str(self.nm[ip]['tcp'][80]['script']['http-title']),re.IGNORECASE):
+        return True
+    except (KeyError, IndexError):
+      print(f"{ip} no correct script")
+    except:
+      traceback.print_exc()
+      sys.exit(0)
+    return False
+
+  def check_synology(self, ip):
+      # 检查Synology特征
+    try:
+      if 'Linux' in self.nm[ip]['osmatch'][0]['name'] and 5000 in self.nm[ip]['tcp']:
+        pass
+      else:
+        return False
+      if re.search(r'Synology',str(self.nm[ip]['tcp'][5000]['banner']),re.IGNORECASE):
+        return True
+      elif re.search(r'Synology',str(self.nm[ip]['tcp'][80]['script']['http-title'] ),re.IGNORECASE):
+        return True
+    except (KeyError, IndexError):
+      print(f"{ip} no correct script")
+    except:
+      traceback.print_exc()
+      sys.exit(0)
+    return False
+
+  def honeypot_check(finger: List[Finger]):
+    pass
 
 def honeypot_check(fingers: List[Finger]):
   ans = []
@@ -99,14 +184,22 @@ def honeypot_check(fingers: List[Finger]):
     if f[0]=='2222' and f[3]['banner'] == "SSH-2.0-OpenSSH_5.1p1 Debian-5":
       ans.append(Honeypot(2222, "Kippo"))
 
+
 def _default_output(_nm: nmap.PortScanner):
-  order_dict = xmltodict.parse(_nm.get_nmap_last_output())
-  host = _nm.all_hosts()[0]
-  with open(f'./result/json/{host}_nm.json','w') as f:
-    f.write(json.dumps(order_dict,indent=4))
-    print(f"Host:{host} Saved.")
-    
-    
+  try:
+    order_dict = xmltodict.parse(_nm.get_nmap_last_output())
+    host = _nm.all_hosts()[0]
+    json.dump(order_dict, open(f'./result/json/{host}_nm.json', 'w'), indent=2, ensure_ascii=False)
+    print(f"[*] Host:{host} Saved.")
+  except (KeyError, IndexError):
+    print(f"host not alive")
+    # sys.exit(0)
+  except FileExistsError:
+    print(f"[x] Host:{host} JsonFile Exists.")
+  except:
+    traceback.print_exc()
+    sys.exit(0)
+
 
 if __name__ == '__main__':
   op(finger_scan('113.30.191.68', [2222]))
