@@ -26,7 +26,7 @@ def test_port(ip: Ip, ports: List[Port]):
 TOP_250 = get_top_ports(250)
 def test_port_ms(hosts: List[Ip], alive_ip: List[Ip], 
                  ports: List[Port], lots_ports: List[Port], 
-                 repeat = 2) -> Dict[Ip, Set[Port]]:
+                 repeat = 2) -> Dict[Ip, List[Port]]:
   ret = {ip: set() for ip in alive_ip}
   
   def t(hosts: Iterable[Ip], ports: List[Port]):
@@ -39,25 +39,44 @@ def test_port_ms(hosts: List[Ip], alive_ip: List[Ip],
   for _ in range(repeat):
     t(hosts, TOP_250)
   lg.info(f"TOP 250 ports scan done, {len(ret)} hosts alive")
+  lg.debug(f"result: {ret}")
+  
   for _ in range(repeat):
     t(hosts, ports)
   lg.info(f"TOP {ports.__len__()} ports scan done, {len(ret)} hosts alive")
+  lg.debug(f"result: {ret}")
+
   for _ in range(repeat):
     t(ret.keys(), lots_ports)
-  lg.info(f"TOP {lots_ports.__len__()} ports scan done, {len(ret)} hosts alive")
+  lg.info(f"TOP {lots_ports.__len__()} ports scan done")
+  lg.debug(f"result: {ret}")
   
+  async def t2(ip: Ip, port: Port):
+    for _ in range(3):
+      if await test_connect(ip, port):
+        return
+    lg.debug(f"port {port} of {ip} is not alive")
+    ret[ip].discard(port)
+  
+  ai.set_event_loop(ai.new_event_loop())
+  ai.get_event_loop().run_until_complete(
+    ai.gather(*[t2(ip, port) for ip in ret.keys() for port in ret[ip]]))
+  lg.info("port connect test done")
+  
+  for k,v in ret.items():
+    ret[k] = list(v)
   
   return ret
 
 async def test_connect(ip: Ip, port: Port):
   try:
-    reader, writer = await ai.open_connection(ip, port, ssl_handshake_timeout=1000000)
+    reader, writer = await ai.open_connection(ip, port)
     writer.close()
     await writer.wait_closed()
     return True
-  except:
+  except OSError as e:
     return False
 
 if __name__ == '__main__':
-  print(ai.get_event_loop().run_until_complete(test_connect("211.22.90.1", 110)))
+  print(ai.get_event_loop().run_until_complete(test_connect("211.22.90.1", 111)))
   # print(test_port('211.22.90.152', list(range(25000, 35000))))
