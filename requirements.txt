@@ -5,3 +5,4 @@ python_masscan~=1.0.0
 python_nmap~=0.7.1
 scapy~=2.5.0
 tqdm~=4.64.1
+xmltodict
