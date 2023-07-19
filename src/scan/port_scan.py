@@ -9,7 +9,6 @@ import re
 
 from scapy.layers.inet import IP, TCP
 from scapy.sendrecv import sr1, sr
-import masscan
 
 from pitricks.utils import make_parent_top
 make_parent_top(2)
@@ -27,17 +26,20 @@ def test_port(ip: Ip, ports: List[Port]):
     for rsp in ans[0].res]
   return op_ports
 
-ip_port_pattern = r"Discovered open port (\d+)/[^ ]* on ([.\d]+)"
+ip_port_pattern = r"Discovered open port (\d{1,5})/[^ ]* on (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"
 ip_port_reg = re.compile(ip_port_pattern)
 def run_mas_shell(shell: str):
+  lg.debug(f"run command: {shell}")
   ret = []
   proc = pexpect.spawn(shell)
   while True:
     proc.expect(["waiting -2", pexpect.EOF, ip_port_pattern])
     if proc.after not in (b"waiting -2", pexpect.EOF):
       port, ip = re.findall(ip_port_reg, proc.after.decode('utf-8'))[0]
-      ret.append((ip, port))
+      ret.append((ip, int(port)))
+      lg.debug(f"found {ip}:{port}")
     else:
+      lg.debug("kill masscan")
       break
   proc.close()
   return ret
@@ -80,6 +82,7 @@ def test_port_ms(hosts: List[Ip], alive_ip: List[Ip],
     ret[ip].discard(port)
   
   ai.set_event_loop(ai.new_event_loop())
+  
   ai.get_event_loop().run_until_complete(
     ai.gather(*[t2(ip, port) for ip in ret.keys() for port in ret[ip]]))
   lg.info("port connect test done")

@@ -35,9 +35,12 @@ if __name__ == '__main__':
     with ThreadPoolExecutor(max_workers=80) as pool:
       futures = []
       for ip, ports in ip_port_alive.items():
-        future = pool.submit(finger_scan, ip, ports)
-        future.ip = ip
-        futures.append(future)
+        if ports:
+          future = pool.submit(finger_scan, ip, ports)
+          future.ip = ip
+          futures.append(future)
+        else:
+          ...#TODO
       
       for future in as_completed(futures):
         json.dump(finger_format(future.ip,future.result()[0],future.result()[1],str(future.result()[2])),open(f'./result/format_json/{future.ip}.json', 'w'), indent=2, ensure_ascii=False)
