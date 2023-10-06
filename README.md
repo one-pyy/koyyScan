@@ -1,6 +1,6 @@
 # KoyyScan
 
-为了交scisn差写的辣鸡小工具, 不过准备狠狠重构成可以用的玩意= =
+为了交ciscn差写的辣鸡小工具, 不过准备狠狠重构成可以用的玩意= =
 
 感恩一起坐牢的[ko同学](https://github.com/koali-www)
 
